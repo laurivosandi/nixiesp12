@@ -15,3 +15,14 @@ Some KiCad screenshots:
 
 <img src="nixiesp.png"/>
 
+
+##Install
+
+Boot ESP8266 with program pin held low and flash MicroPython:
+
+```bash
+esptool.py --port /dev/ttyUSB0 --baud 460800 erase_flash
+esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=detect 0 esp8266-20170612-v1.9.1.bin 
+```
+
+Upload main.py and boot.py and adjust network configuration in boot.py accordingly.
