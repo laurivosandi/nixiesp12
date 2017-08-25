@@ -29,11 +29,17 @@ Photos:
 Boot ESP8266 with program pin held low and flash MicroPython:
 
 ```bash
+wget http://micropython.org/resources/firmware/esp8266-20170612-v1.9.1.bin
 esptool.py --port /dev/ttyUSB0 --baud 460800 erase_flash
 esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=detect 0 esp8266-20170612-v1.9.1.bin 
 ```
 
-Upload main.py and boot.py and adjust network configuration in boot.py accordingly.
+Upload main.py and boot.py and adjust network configuration in boot.py accordingly:
+
+```bash
+ampy -p /dev/ttyUSB0 put boot.py
+ampy -p /dev/ttyUSB0 put main.py
+```
 
 ## Assembly tips
 
