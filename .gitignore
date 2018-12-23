@@ -1,0 +1,5 @@
+_autosave*
+*.bak
+export
+*.kicad_pcb-bak
+*rescue.lib

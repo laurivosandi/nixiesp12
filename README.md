@@ -17,11 +17,7 @@ Some highlights:
 
 Some KiCad screenshots:
 
-<img src="nixiesp.png"/>
-
-Photos:
-
-<img src="photo.jpg"/>
+<img src="/nixiesp.png"/>
 
 
 ## Install
@@ -29,17 +25,19 @@ Photos:
 Boot ESP8266 with program pin held low and flash MicroPython:
 
 ```bash
-wget http://micropython.org/resources/firmware/esp8266-20170612-v1.9.1.bin
-esptool.py --port /dev/ttyUSB0 --baud 460800 erase_flash
-esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=detect 0 esp8266-20170612-v1.9.1.bin 
+cd firmware
+make erase
+make flash
+
+Reboot ESP8266 and finish with by uploading scripts:
+
+```
+make upload
 ```
 
-Upload main.py and boot.py and adjust network configuration in boot.py accordingly:
-
-```bash
-ampy -p /dev/ttyUSB0 put boot.py
-ampy -p /dev/ttyUSB0 put main.py
-```
+Power cycle the device and via WiFi connect to the device,
+network name is MicroPython-XXXXXX and password is micropythoN.
+Navigate to http://192.168.4.1 to start the configuration wizard.
 
 ## Assembly tips
 
@@ -52,6 +50,9 @@ Once the PCB is milled or etched make sure you clean the 180V rails thoroughly,
 that voltage is high enough to cross gaps of 0.1mm.
 Once that happens it burns a thick dark trace into the fiberglass of PCB and
 it's pretty tricky to clean up.
+The PCB is designed with 0.4mm clearance to be compliant with HV designs.
+This clearance of course assumes that PCB traces are covered.
+Either use solder mask or conformal coating.
 
 Use the bench power supply to gradually power up the device,
 at 9V set current limiter to 0.5A max.
