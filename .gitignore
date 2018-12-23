@@ -3,3 +3,8 @@ _autosave*
 export
 *.kicad_pcb-bak
 *rescue.lib
+firmware/*.bin
+*.drl
+*.g*
+*.ps
+*.zip
