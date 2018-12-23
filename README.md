@@ -28,10 +28,10 @@ Boot ESP8266 with program pin held low and flash MicroPython:
 cd firmware
 make erase
 make flash
-
+```
 Reboot ESP8266 and finish with by uploading scripts:
 
-```
+```bash
 make upload
 ```
 
