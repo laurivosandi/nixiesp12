@@ -8,8 +8,8 @@ from timezone import TIMEZONES
 app = picoweb.WebApp(__name__)
 ap_if = network.WLAN(network.AP_IF)
 sta_if = network.WLAN(network.STA_IF)
-nets = sta_if.scan()
 sta_if.active(True)
+nets = sta_if.scan()
 config = dict()
 try:
     with open("config.json") as fh:
