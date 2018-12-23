@@ -17,10 +17,17 @@ Some highlights:
 
 Some KiCad screenshots:
 
-<img src="/nixiesp.png"/>
+<img src="https://git.k-space.ee/lauri/nixiesp12/raw/master/nixiesp.png"/>
 
 
 ## Install
+
+Install dependencies on an Ubuntu 18.04 box:
+
+```bash
+apt install -y python3-pip wget picocom make
+pip3 install adafruit-ampy esptool
+```
 
 Boot ESP8266 with program pin held low and flash MicroPython:
 
