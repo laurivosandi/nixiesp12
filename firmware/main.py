@@ -90,7 +90,7 @@ RESYNC = int(config.get("interval")) # Resync once in 8 hours
 print("NTP resynchronization interval", RESYNC, "seconds")
 DEBUG = False
 
-print("Press Ctrl-C now abort main.py execution and to retain keyboard input")
+print("Press Ctrl-C now to abort main.py execution and retain keyboard input")
 sleep_ms(2000)
 
 import time
@@ -121,9 +121,22 @@ def bitbang_digit(digit):
     bitbang_bit(blink)
     bitbang_bit(blink)
 
-def dump_time(hour, minute, second):
+def dst_offset(month, day, dow):
+    if month < 3 or month > 10:
+        return 0
+    if month > 3 and month < 10:
+        return 1
+    previous_sunday = day - dow
+    if month == 3:
+        return int(previous_sunday >= 25)
+    return int(previous_sunday < 25)
+
+
+def dump_time(year, month, day, hour, minute, second, dow):
+    offset = dst_offset(month, day, dow)
     if DEBUG:
-        print("Time is %02d:%02d:%02d" % (hour, minute, second))
+        print("Time is %02d:%02d:%02d, dst offset %d" % (hour, minute, second, offset))
+    hour = (hour + TIMEZONE + offset) % 24
     bitbang_digit(hour // 10)
     bitbang_digit(hour % 10)
     bitbang_digit(minute // 10)
@@ -134,28 +147,40 @@ def dump_time(hour, minute, second):
 # RTC accuracy is still garbage, time.ticks_ms() which is bound to CPU ticks seems to be more accurate
 # https://forum.micropython.org/viewtopic.php?t=3251#p19092
 
+
+# Boot up test sequence
+for j in range(0, 10):
+    for i in range(0, 6):
+        bitbang_digit(j)
+    latch.on()
+    latch.off()
+    sleep_ms(500)
+
+
 while True:
     if countdown <= 0:
         try:
             ticks_then, time_then = time.ticks_ms(), ntptime.time()
         except OSError:
+            sleep_ms(500)
             print("Resync failed")
+            continue
         else:
             countdown = RESYNC
             print("Resync done")
     else:
-        year, month, day, hour, minute, second, _, _ = time.localtime(time_then + (time.ticks_ms() - ticks_then) // 1000)
+        year, month, day, hour, minute, second, dow, _ = time.localtime(time_then + (time.ticks_ms() - ticks_then) // 1000)
         sleep_ms(500-(time.ticks_ms() - ticks_then) % 1000)
         blink = True
-        dump_time((hour + TIMEZONE) % 24, minute, second)
+        dump_time(year, month, day, hour, minute, second, dow)
         latch.on()
         latch.off()
         countdown -= 1
 
-    year, month, day, hour, minute, second, _, _ = time.localtime(time_then + (time.ticks_ms() - ticks_then) // 1000)
+    year, month, day, hour, minute, second, dow, _ = time.localtime(time_then + (time.ticks_ms() - ticks_then) // 1000)
     sleep_ms(1001-(time.ticks_ms() - ticks_then) % 1000)
     blink = False
-    dump_time((hour + TIMEZONE) % 24, minute, second)
+    dump_time(year, month, day, hour, minute, second, dow)
     latch.on()
     latch.off()
 
