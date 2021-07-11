@@ -7,7 +7,7 @@ Yet another Nixie clock project!
 Some highlights:
 
 * K155ID1 driven IN-12A or IN-12B tubes for hour, minute, seconds
-* BS107 driven IN-6 or similar neon bulbs for digit separation
+* BS108 driven IN-6 or similar neon bulbs for digit separation
 * 74HC595 for serial to parallel conversion
 * ESP8266 for time synchronization
 * LM1117-3.3V and LM1117-5V regulators for logic power supply
@@ -36,7 +36,17 @@ cd firmware
 make erase
 make flash
 ```
-Reboot ESP8266 and finish with by uploading scripts:
+
+Reboot ESP8266, open serial to to the controller and format filesystem:
+
+```
+import os
+os.umount('/')
+os.VfsLfs2.mkfs(bdev)
+os.mount(bdev, '/')
+```
+
+Finish with by uploading scripts:
 
 ```bash
 make upload
@@ -45,6 +55,17 @@ make upload
 Power cycle the device and via WiFi connect to the device,
 network name is MicroPython-XXXXXX and password is micropythoN.
 Navigate to http://192.168.4.1 to start the configuration wizard.
+
+
+## Configuring
+
+If firmware is unable to connect to preconfigured wireless network
+or it is started up for the first time wireless network
+with password `micropythoN` is created.
+
+Connect to that wireless network and open http://192.168.4.1
+in web browser to configure the clock.
+
 
 ## Assembly tips
 
@@ -68,3 +89,11 @@ Otherwise 6V-12V wall adapters are suitable,
 Thincan DBE60 9V wall adapters are pretty much perfect for the job.
 Note that the higher the input voltage the more power is dissipated
 as heat on the 3.3V and 5V voltage regulators, thus at 12V the device gets really hot.
+
+
+## Debugging
+
+* If you get nonsense reading during boot up sequence 0..9 likely the connection between serial-to-parallel chips and high voltage drivers
+  is flaky. Either there are shorted pins or there is no connection at all. Check soldering joints and check for shorts between lines and line to ground.
+* If single tube doesn't light up likely the gas has escaped the tube, find replacement tube.
+* If single digit does not light up likely the tube socket pin is mangled or it is not properly soldered on the side where the PCB trace runs.
