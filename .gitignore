@@ -8,3 +8,4 @@ firmware/*.bin
 *.g*
 *.ps
 *.zip
+fp-info-cache
