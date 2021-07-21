@@ -1,4 +1,4 @@
-NAME=esp8266-1m-20210418-v1.15.bin
+NAME=esp8266-1m-20210618-v1.16.bin
 
 flash:
 	wget -c http://micropython.org/resources/firmware/${NAME}
