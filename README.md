@@ -6,10 +6,10 @@ Yet another Nixie clock project!
 
 Some highlights:
 
-* K155ID1 driven IN-12A or IN-12B tubes for hour, minute, seconds
-* BS108 driven IN-6 or similar neon bulbs for digit separation
+* K155ID1 driven IN-12A or IN-12B tubes for hour, minute, seconds. Use 36k resistors on these tubes.
+* BS108 driven IN-6 or [similar 4*10mm neon bulbs](https://www.aliexpress.com/item/32344955038.html?spm=a2g0s.9042311.0.0.6ab14c4dCxpPZ0) for digit separation. Use 270k resistors on these bulbs.
 * 74HC595 for serial to parallel conversion
-* ESP8266 for time synchronization
+* ESP8266 for time synchronization. Use 1k resistors for pull-up.
 * LM1117-3.3V and LM1117-5V regulators for logic power supply
 * No tube step up converter on-board, pin headers for connecting
   <a href="http://www.ebay.com/itm/DC-5V-12V-to-170V-DC-High-Voltage-NIXIE-Power-Supply-Module-PSU-NIXIE-TUBE-ERA-/322511957768?hash=item4b1735ef08">third party power supply</a>
