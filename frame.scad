@@ -9,17 +9,17 @@ module thingie() {
         EDGE_LENGTH + 2 * WRAPAROUND,
         EDGE_LENGTH + 2 * WRAPAROUND*2 + PCB_THICKNESS,
         9]);
-      translate([EDGE_LENGTH+17+5+2, EDGE_LENGTH+5+6]) {
-        cylinder(10, EDGE_LENGTH+5, EDGE_LENGTH+5, $fn=100);
+      translate([EDGE_LENGTH+17+5+3, EDGE_LENGTH+5+5]) {
+        cylinder(10, EDGE_LENGTH+5, EDGE_LENGTH+5, $fn=500);
       };
 
-      translate([-142,71]) {
-        cylinder(10, 155, 155, $fn=100);
+      translate([-141,73]) {
+        cylinder(10, 155, 155, $fn=500);
       };
 
 
       translate([WRAPAROUND, WRAPAROUND*3,1])  {
-        translate([13, PCB_THICKNESS,0])  {
+        translate([14, PCB_THICKNESS,0])  {
           cube([PCB_THICKNESS,EDGE_LENGTH,20]);
         }
         cube([EDGE_LENGTH,PCB_THICKNESS,20]);

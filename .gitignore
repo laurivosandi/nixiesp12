@@ -9,3 +9,4 @@ firmware/*.bin
 *.ps
 *.zip
 fp-info-cache
+*.stl
