@@ -1,5 +1,5 @@
 ---
-name: arduino
+name: esp8266-arduino
 
 on:
   push:
@@ -39,12 +39,12 @@ jobs:
         run: arduino-cli lib install time wifimanager ezTime
 
       - name: Make timezones
-        run: python firmware/cities.py > firmware/cities.h
+        run: python firmware/cities.py > firmware/esp8266-arduino/cities.h
 
       - name: Compile Sketch
         run: >
           arduino-cli compile --fqbn ${{ matrix.fqbn }} -e
-          firmware
+          firmware/esp8266
 
       - name: Create Release
         id: create_release
@@ -64,6 +64,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./firmware/build/esp8266.esp8266.generic/firmware.ino.bin
-          asset_name: nixiesp12.bin
+          asset_path: ./firmware/esp8266-arduino/build/esp8266.esp8266.generic/esp32c3-arduino.ino.bin
+          asset_name: nixiesp12-esp8266-arduino.bin
           asset_content_type: application/bin
