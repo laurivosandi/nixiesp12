@@ -1,0 +1,70 @@
+---
+name: esp32c3-arduino
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+
+  build:
+    permissions: write-all
+
+    strategy:
+      matrix:
+        arduino-platform: ["esp32:esp32"]
+        include:
+          - arduino-platform: "esp32:esp32"
+            fqbn: "esp32:esp32:esp32c3"
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+
+      - name: Install platform
+        run: >
+
+          arduino-cli config set network.connection_timeout 600s
+          arduino-cli core install
+          ${{ matrix.arduino-platform }}
+
+      - name: Install time lib
+        run: arduino-cli lib install time wifimanager ezTime
+
+      - name: Make timezones
+        run: python firmware/cities.py > firmware/esp32c3-arduino/cities.h
+
+      - name: Compile Sketch
+        run: >
+          arduino-cli compile --fqbn ${{ matrix.fqbn }} -e
+          firmware/esp32c3-arduino
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./firmware/esp32c3-arduino/build/esp32.esp32.esp32c3/esp32c3-arduino.ino.bin
+          asset_name: nixiesp12-esp32c3-arduino.bin
+          asset_content_type: application/bin
