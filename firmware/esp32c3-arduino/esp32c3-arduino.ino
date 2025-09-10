@@ -398,9 +398,11 @@ void handleMetrics(){
     buf += displayTaskIterationsCount;
     buf += "\n";
 
-    buf += "nixie_boot_timestamp_seconds ";
-    buf += bootTimestamp;
-    buf += "\n";
+    if (bootTimestamp > 0) {
+        buf += "nixie_boot_timestamp_seconds ";
+        buf += bootTimestamp;
+        buf += "\n";
+    }
 
     buf += "nixie_last_ntp_sync_timestamp_seconds ";
     buf += lastNtpSyncTimestamp;
