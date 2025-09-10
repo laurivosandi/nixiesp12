@@ -341,10 +341,6 @@ void handleMetrics(){
     buf += getCpuFrequencyMhz();
     buf += "\n";
 
-    buf += "nixie_uptime_seconds ";
-    buf += millis() / 1000;
-    buf += "\n";
-
     buf += "nixie_task_count ";
     buf += uxTaskGetNumberOfTasks();
     buf += "\n";
@@ -394,11 +390,11 @@ void handleMetrics(){
     buf += wifiManagerProcessCount;
     buf += "\n";
 
-    buf += "nixie_task_stack_high_water_mark ";
+    buf += "nixie_task_stack_high_water_mark_bytes ";
     buf += uxTaskGetStackHighWaterMark(NULL);
     buf += "\n";
 
-    buf += "nixie_display_task_iterations_count";
+    buf += "nixie_display_task_iterations_count ";
     buf += displayTaskIterationsCount;
     buf += "\n";
 
