@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  prometheus:
+    network_mode: "host"
+    image: prom/prometheus:latest
+    command:
+    - --config.file=/config/prometheus.yml
+    volumes:
+     - ./config:/config:ro

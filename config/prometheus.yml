@@ -1,0 +1,13 @@
+global:
+  scrape_interval:     2s
+  evaluation_interval: 2s
+  scrape_timeout: 1s
+
+scrape_configs:
+  - job_name: nixie
+    static_configs:
+    - targets:
+        - 192.168.88.16
+        - 192.168.88.17
+        - 192.168.88.18
+        - 192.168.88.20
