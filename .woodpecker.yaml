@@ -1,0 +1,29 @@
+when:
+  event:
+    - tag
+
+skip_clone: true
+steps:
+- name: clone
+  image: woodpeckerci/plugin-git
+  backend_options: &backend_options
+    kubernetes:
+      nodeSelector:
+        kubernetes.io/arch: amd64
+
+- name: build
+  image: git.codemowers.io/codemowers/arduino-cli
+  backend_options: *backend_options
+  commands:
+    - arduino-cli compile --fqbn esp32:esp32:esp32c3 -e firmware/esp32c3-arduino/
+    - arduino-cli compile --fqbn esp8266:esp8266:generic -e firmware/esp8266-arduino/
+
+- name: release
+  image: woodpeckerci/plugin-release:0.2.6
+  backend_options: *backend_options
+  settings:
+    api_key:
+      from_secret: gitea_release_token
+    files:
+      - firmware/esp8266-arduino/build/esp8266.esp8266.generic/esp8266-arduino.ino.bin
+      - firmware/esp32c3-arduino/build/esp32.esp32.esp32c3/esp32c3-arduino.ino.bin
