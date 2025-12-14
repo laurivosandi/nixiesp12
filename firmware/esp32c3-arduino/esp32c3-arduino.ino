@@ -243,6 +243,9 @@ uint64_t render_time(bool colons = true) {
     time_t now = time(nullptr);
     localtime_r(&now, &timeinfo);
     int h = timeinfo.tm_hour % configHourFormat;
+    if (configHourFormat == 12 && h == 0) {
+        h = 12; // TODO: Parameter to configure 12-hour format
+    }
     int m = timeinfo.tm_min;
     int s = timeinfo.tm_sec;
     return render_digits(h / 10, h % 10, m / 10, m % 10, s / 10, s % 10) | (colons ? COLON_ALL : 0);
