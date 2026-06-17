@@ -30,7 +30,7 @@ jobs:
           submodules: recursive
 
       - name: Setup Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
+        uses: arduino/setup-arduino-cli@v2
 
       - name: Configure Arduino CLI
         run: arduino-cli config set network.connection_timeout 600s
