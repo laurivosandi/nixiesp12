@@ -11,7 +11,8 @@ on:
 jobs:
 
   build:
-    permissions: write-all
+    permissions:
+      contents: write
 
     strategy:
       matrix:
@@ -31,43 +32,40 @@ jobs:
       - name: Setup Arduino CLI
         uses: arduino/setup-arduino-cli@v1
 
+      - name: Configure Arduino CLI
+        run: arduino-cli config set network.connection_timeout 600s
+
       - name: Install platform
         run: >
           arduino-cli core install
           --additional-urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json
           ${{ matrix.arduino-platform }}
 
-      - name: Install time lib
-        run: arduino-cli lib install time wifimanager ezTime
+      - name: Install libraries
+        run: arduino-cli lib install wifimanager ESP8266TimerInterrupt ezTime
 
       - name: Make timezones
-        run: python firmware/cities.py > firmware/esp8266-arduino/cities.h
+        run: python3 firmware/cities.py > firmware/esp8266-arduino/cities.h
 
       - name: Compile Sketch
         run: >
           arduino-cli compile --fqbn ${{ matrix.fqbn }} -e
-          firmware/esp8266
+          firmware/esp8266-arduino
 
-      - name: Create Release
+      - name: Publish release asset
         if: startsWith(github.ref, 'refs/tags/')
-        id: create_release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+          ASSET_PATH: ./firmware/esp8266-arduino/build/esp8266.esp8266.generic/esp8266-arduino.ino.bin
+          ASSET_NAME: nixiesp12-esp8266-arduino.bin
+        run: |
+          set -eu
 
-      - name: Upload Release Asset
-        if: startsWith(github.ref, 'refs/tags/')
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./firmware/esp8266-arduino/build/esp8266.esp8266.generic/esp32c3-arduino.ino.bin
-          asset_name: nixiesp12-esp8266-arduino.bin
-          asset_content_type: application/bin
+          release_tag="${GITHUB_REF_NAME}"
+          release_title="Release ${GITHUB_REF_NAME}"
+
+          if ! gh release view "${release_tag}" >/dev/null 2>&1; then
+            gh release create "${release_tag}" --title "${release_title}" --target "${GITHUB_SHA}" || gh release view "${release_tag}" >/dev/null
+          fi
+
+          gh release upload "${release_tag}" "${ASSET_PATH}#${ASSET_NAME}" --clobber
